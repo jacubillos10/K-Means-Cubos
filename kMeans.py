@@ -13,6 +13,9 @@ datos_tot=datos_raw-medias_datos_raw;
 z_Target=digitos.target;
 
 def hallar_error(z1,z2):
+	#Esta función halla el porcentaje de elementos diferentes entre dos arrays
+	#@input: array1, array2 en forma de lista o np.array
+	#@output: [double:resp] Idica la fracción de error que hay entre dos arrays
 	suma=0;
 	for j in range(len(z1)):
 		if z1[j]!=z2[j]:
@@ -39,6 +42,9 @@ def hallar_equivalencia(z1,z2,nClusters):
 #fin hallar_equivalencia
 
 def hallarPhi_PCA(Datos_m,nComp):
+#Esta función halla la matriz de nComp componentes principales de unos datos dados Datos_m
+#@input: [np.array:Datos_m] Datos a los cuales se les va a sacar los componentes principales, [int:n_Comp] Número de componentes.
+#@output: [np.array:phi] Matriz para transformar los datos en coordenadas iniciales a matriz en coordenadas de componentes principales
 	nDatos=len(Datos_m[:,0]);
 	nVar=len(Datos_m[0,:]);
 	covarianzas=(1/(nDatos-1))*(Datos_m.T).dot(Datos_m);
@@ -52,6 +58,9 @@ def hallarPhi_PCA(Datos_m,nComp):
 #fin función
 
 def reducir_PCA(Datos_m,nComp):
+#Esta función halla los datos en función de las coordenadas de los componentes principales
+#@input: [np.array:Datos_m] Datos a los cuales se les va a sacar los componentes principales, [int:n_Comp] Número de componentes.
+#@output: [np.array:xnuevo] Matriz de lo datos en función de las coordenadas de los componentes principales.
 	phi=hallarPhi_PCA(Datos_m,nComp);
 	xnuevo=Datos_m.dot(phi);
 	return xnuevo;
@@ -60,6 +69,9 @@ def reducir_PCA(Datos_m,nComp):
 datos_red=reducir_PCA(datos_tot,2);
 
 def hallarCoordenadasCentroides(Datos,z,nCentroides):
+#Esta función halla las coordenadas de los nuevos centroides dados los datos(Datos), las nuevas etiquetas de cada dato (z) y el número de centroides (nCentroides)
+#@input: [np.array:Datos] Los datos. Pueden ser los originales o reducidos con PCA. [np.array:z] vector que indica las etiquetas de cada dato. [int:nCentroides] Número de centroides
+#@output: [np.array:rCentroides] Matriz de las coordenadas de cada centroide (cada columna indica un centroide(k) y a lo largo de la columna están las poisciones de la coordenada(i)) 
 	rCentroides=np.zeros((len(Datos[0,:]),nCentroides));
 	for k in range(nCentroides):
 		rCentroides[:,k]=np.average(Datos[z==k,:],axis=0);
@@ -68,6 +80,9 @@ def hallarCoordenadasCentroides(Datos,z,nCentroides):
 #fin cunción
 
 def  inicializarKpp(Datos,nCentroides):
+#Esta función halla las coordenadas de los centroides en la primera iteración dados los datos y el número de centroides
+#@input: [np.array:Datos] Los datos, [int:nCentroides] número de centroides que se desea producir
+#@output: [np.array:centroides] Matriz de las coordenadas de los centroides (cada columna un centroide, cada fila una misma coordenada)
 	nDatos=len(Datos[:,0]);
 	centroide1=np.random.choice(nDatos);
 	Dm=Datos-Datos[centroide1,:];
@@ -84,7 +99,9 @@ def  inicializarKpp(Datos,nCentroides):
 #fin inicializar 
 
 def sonIguales(array1, array2):
-	#esta función mira si dos array son exactamente iguales
+	#Esta función verifica si dos arrays son exactamente iguales
+	#@input: array1, array2 en forma de lista o np.array
+	#@output: boolean, que idica si son iguales o no
 	resp=True;
 	if len(array1)!=len(array2):
 		print(".|. Los array tienen que ser iguales .|. ");
@@ -100,7 +117,13 @@ def sonIguales(array1, array2):
 #fin función igualitos
 
 def KMeansC(Datos,nCentroides,rkini=0,opcion=0):
-	#llamaremos rk a las coordenadas de los centroides
+	#FUNCIÓN PRINCIPAL, rk son las coordenadas de los centroides. 
+	#Esta función ejecuta el algoritmo de K-Means Clustering sobre un set de datos dados los siguientes input:
+	#@inputs: 
+	#[np.array:Datos] Matriz de los datos, por favor coloque cada dato en una fila y cada coordenada en una columna. 
+	#[int:nCentroides] número de centroides que desea colocar
+	#[np.array:rkini] Matriz de coordenadas de los centroides, en caso de que la opción sea1. Por favor colocar cada centroide ne una columna y cada coordenada en una fila
+	#[int:opcion] Coloque 0 si desea que el programa inicialice los centroides de acuerdo al articulo de Arthur & Vassilvitskii (2006). Coloque 1 si desea especificar las coordenadas iniciales
 	nDatos=len(Datos[:,0]);
 	if opcion==0:
 		rk=inicializarKpp(Datos,nCentroides);
