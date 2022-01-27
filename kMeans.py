@@ -104,8 +104,8 @@ def sonIguales(array1, array2):
 	#@output: boolean, que idica si son iguales o no
 	resp=True;
 	if len(array1)!=len(array2):
-		print(".|. Los array tienen que ser iguales .|. ");
-		print("Le botaré un False... por pendejo... ");
+		print("-.- Los array tienen que tener la misma dimensión-.- ");
+		print("Devolveré un false... ");
 		resp=False;
 	#fin if
 	for i in range(len(array1)):
